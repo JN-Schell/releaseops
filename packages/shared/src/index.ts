@@ -26,7 +26,13 @@ export {
   type Principal,
   type UserRole,
 } from "./permissions.js";
-export { QUEUE_NAMES, SERVICE_NAMES } from "./constants.js";
+export {
+  GITHUB_WEBHOOK_EVENTS,
+  JOB_NAMES,
+  QUEUE_NAMES,
+  SERVICE_NAMES,
+  type GithubWebhookEvent,
+} from "./constants.js";
 export {
   createProjectBodySchema,
   createProjectResponseSchema,

@@ -13,6 +13,10 @@ tag. Documentation merged after auth is listed under Unreleased and is not part 
 
 ### Added
 
+- Signed GitHub webhooks. `POST /api/v1/webhooks/github` checks `X-Hub-Signature-256`, stores
+  `workflow_run`, `push`, and `deployment_status` once, and queues the delivery for the worker.
+  A duplicate delivery id is acknowledged and is not queued again. Turning a delivery into a build
+  is still the next issue.
 - Projects and environments. An administrator can link a GitHub repository, set environments, and
   copy a webhook secret. The secret is stored for later verification and is not written to the
   audit log. Encryption of that column is still the open hardening issue.

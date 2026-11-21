@@ -2,7 +2,7 @@
 
 **A CI/CD management platform:** track build pipelines, gate production deployments behind approvals, and keep a full audit trail of every release.
 
-> **Status: Phase 2 projects and environments.** See the [project plan](docs/PLAN.md) for the full roadmap.
+> **Status: Phase 2 projects, environments, and signed webhooks.** See the [project plan](docs/PLAN.md) for the full roadmap.
 
 [![CI](https://github.com/sch3lly-stack/releaseops/actions/workflows/ci.yml/badge.svg)](https://github.com/sch3lly-stack/releaseops/actions/workflows/ci.yml)
 
