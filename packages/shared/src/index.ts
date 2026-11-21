@@ -27,3 +27,21 @@ export {
   type UserRole,
 } from "./permissions.js";
 export { QUEUE_NAMES, SERVICE_NAMES } from "./constants.js";
+export {
+  createProjectBodySchema,
+  createProjectResponseSchema,
+  environmentBodySchema,
+  environmentResponseSchema,
+  environmentSchema,
+  projectListResponseSchema,
+  projectResponseSchema,
+  projectSchema,
+  updateEnvironmentBodySchema,
+  updateProjectBodySchema,
+  type CreateProjectBody,
+  type Environment,
+  type EnvironmentBody,
+  type Project,
+  type UpdateEnvironmentBody,
+  type UpdateProjectBody,
+} from "./projects.js";

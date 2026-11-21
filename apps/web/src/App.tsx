@@ -4,6 +4,9 @@ import { AuthLayout } from "./components/AuthLayout";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import { HomePage } from "./pages/HomePage";
 import { LoginPage } from "./pages/LoginPage";
+import { NewProjectPage } from "./pages/NewProjectPage";
+import { ProjectPage } from "./pages/ProjectPage";
+import { ProjectsPage } from "./pages/ProjectsPage";
 import { RegisterPage } from "./pages/RegisterPage";
 import { UsersPage } from "./pages/UsersPage";
 
@@ -17,6 +20,9 @@ export function App() {
       <Route element={<ProtectedRoute />}>
         <Route element={<AppShell />}>
           <Route index element={<HomePage />} />
+          <Route path="/projects" element={<ProjectsPage />} />
+          <Route path="/projects/new" element={<NewProjectPage />} />
+          <Route path="/projects/:slug" element={<ProjectPage />} />
           <Route path="/admin/users" element={<UsersPage />} />
         </Route>
       </Route>

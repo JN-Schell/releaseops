@@ -404,7 +404,7 @@ Estimates assume part-time work of about 10–15 hours/week. Each phase ends wit
 **Done when:** every role sees exactly what it should, and there are tests proving each denial.
 
 ### Phase 2 — Projects, Environments, Builds (Weeks 4–5) → `v0.3.0`
-- [ ] Projects and environments CRUD (API + UI)
+- [x] Projects and environments CRUD (API + UI)
 - [ ] GitHub webhook endpoint: HMAC verify, dedupe, store, enqueue
 - [ ] Worker: `workflow_run` → `builds` upsert
 - [ ] Builds list and detail pages with filters and pagination
