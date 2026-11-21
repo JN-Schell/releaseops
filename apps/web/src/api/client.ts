@@ -1,13 +1,22 @@
 import {
   authUserResponseSchema,
+  createProjectResponseSchema,
+  environmentResponseSchema,
   errorBodySchema,
   healthResponseSchema,
   inviteResponseSchema,
+  projectListResponseSchema,
+  projectResponseSchema,
   setupResponseSchema,
   userListResponseSchema,
   type CreateInviteBody,
+  type CreateProjectBody,
+  type EnvironmentBody,
   type HealthResponse,
+  type Project,
   type PublicUser,
+  type UpdateEnvironmentBody,
+  type UpdateProjectBody,
   type UpdateUserBody,
 } from "@releaseops/shared";
 
@@ -135,6 +144,73 @@ export async function createInvite(input: CreateInviteBody): Promise<{
   });
   if (!response.ok) await parseError(response);
   return inviteResponseSchema.parse(await response.json());
+}
+
+export async function fetchProjects(): Promise<Project[]> {
+  const response = await request("/api/v1/projects");
+  if (!response.ok) await parseError(response);
+  return projectListResponseSchema.parse(await response.json()).data;
+}
+
+export async function fetchProjectBySlug(slug: string): Promise<Project> {
+  const response = await request(`/api/v1/projects/slug/${encodeURIComponent(slug)}`);
+  if (!response.ok) await parseError(response);
+  return projectResponseSchema.parse(await response.json()).project;
+}
+
+export async function createProject(input: CreateProjectBody): Promise<{
+  project: Project;
+  webhook: { secret: string; payloadPath: string; instructions: string };
+}> {
+  const response = await request("/api/v1/projects", {
+    method: "POST",
+    body: JSON.stringify(input),
+  });
+  if (!response.ok) await parseError(response);
+  return createProjectResponseSchema.parse(await response.json());
+}
+
+export async function updateProject(id: string, patch: UpdateProjectBody): Promise<Project> {
+  const response = await request(`/api/v1/projects/${id}`, {
+    method: "PATCH",
+    body: JSON.stringify(patch),
+  });
+  if (!response.ok) await parseError(response);
+  return projectResponseSchema.parse(await response.json()).project;
+}
+
+export async function deleteProject(id: string): Promise<void> {
+  const response = await request(`/api/v1/projects/${id}`, { method: "DELETE" });
+  if (!response.ok) await parseError(response);
+}
+
+export async function createEnvironment(
+  projectId: string,
+  input: EnvironmentBody,
+): Promise<Project["environments"][number]> {
+  const response = await request(`/api/v1/projects/${projectId}/environments`, {
+    method: "POST",
+    body: JSON.stringify(input),
+  });
+  if (!response.ok) await parseError(response);
+  return environmentResponseSchema.parse(await response.json()).environment;
+}
+
+export async function updateEnvironment(
+  id: string,
+  patch: UpdateEnvironmentBody,
+): Promise<Project["environments"][number]> {
+  const response = await request(`/api/v1/environments/${id}`, {
+    method: "PATCH",
+    body: JSON.stringify(patch),
+  });
+  if (!response.ok) await parseError(response);
+  return environmentResponseSchema.parse(await response.json()).environment;
+}
+
+export async function deleteEnvironment(id: string): Promise<void> {
+  const response = await request(`/api/v1/environments/${id}`, { method: "DELETE" });
+  if (!response.ok) await parseError(response);
 }
 
 export async function updateUser(id: string, patch: UpdateUserBody): Promise<PublicUser> {

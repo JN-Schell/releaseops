@@ -13,6 +13,9 @@ tag. Documentation merged after auth is listed under Unreleased and is not part 
 
 ### Added
 
+- Projects and environments. An administrator can link a GitHub repository, set environments, and
+  copy a webhook secret. The secret is stored for later verification and is not written to the
+  audit log. Encryption of that column is still the open hardening issue.
 - `AGENTS.md`, `CONTRIBUTING.md`, this changelog, a pull request template, and an issue template
   that make GitHub the system of record for the project.
 - A short daily engineering routine in `.cursor/rules/engineering-workflow.mdc`.

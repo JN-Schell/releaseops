@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { fetchCurrentUser, fetchHealth, loginAccount } from "./client";
+import { createProject, fetchCurrentUser, fetchHealth, loginAccount } from "./client";
 
 afterEach(() => {
   vi.unstubAllGlobals();
@@ -90,6 +90,48 @@ describe("session client", () => {
         credentials: "include",
         body: JSON.stringify({ email: "ada@example.com", password: "correct horse battery" }),
       }),
+    );
+  });
+
+  it("creates a project with credentials included", async () => {
+    const project = {
+      id: "123e4567-e89b-12d3-a456-426614174000",
+      name: "Payments",
+      slug: "payments",
+      description: null,
+      githubOwner: "octo",
+      githubRepo: "payments",
+      defaultBranch: "main",
+      createdAt: "2026-06-01T00:00:00.000Z",
+      updatedAt: "2026-06-01T00:00:00.000Z",
+      environments: [],
+      webhookSecret: "secret",
+    };
+    const fetchMock = vi.fn().mockResolvedValue({
+      ok: true,
+      status: 201,
+      json: async () => ({
+        project,
+        webhook: {
+          secret: "secret",
+          payloadPath: "/api/v1/webhooks/github",
+          instructions: "Add a webhook",
+        },
+      }),
+    });
+    vi.stubGlobal("fetch", fetchMock);
+
+    await expect(
+      createProject({
+        name: "Payments",
+        githubOwner: "octo",
+        githubRepo: "payments",
+        defaultBranch: "main",
+      }),
+    ).resolves.toMatchObject({ project: { slug: "payments" } });
+    expect(fetchMock).toHaveBeenCalledWith(
+      "http://localhost:3001/api/v1/projects",
+      expect.objectContaining({ method: "POST", credentials: "include" }),
     );
   });
 });

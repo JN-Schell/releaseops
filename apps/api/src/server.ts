@@ -5,6 +5,7 @@ import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "./generated/prisma/client.js";
 import { SERVICE_NAMES } from "@releaseops/shared";
 import { PrismaAuthRepository } from "./auth/prisma-repository.js";
+import { PrismaProjectRepository } from "./projects/prisma-repository.js";
 import { buildApp } from "./app.js";
 import { loadEnv } from "./env.js";
 
@@ -28,6 +29,9 @@ const app = await buildApp({
   auth: {
     repository: new PrismaAuthRepository(prisma),
     secureCookies: env.NODE_ENV === "production",
+  },
+  projects: {
+    repository: new PrismaProjectRepository(prisma),
   },
   checkReady: async () => {
     await prisma.$queryRaw`SELECT 1`;

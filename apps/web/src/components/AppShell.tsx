@@ -40,6 +40,9 @@ export function AppShell() {
               <NavLink to="/" end className={({ isActive }) => navClass(isActive)}>
                 Overview
               </NavLink>
+              <NavLink to="/projects" className={({ isActive }) => navClass(isActive)}>
+                Projects
+              </NavLink>
               {canManageUsers ? (
                 <NavLink to="/admin/users" className={({ isActive }) => navClass(isActive)}>
                   Users

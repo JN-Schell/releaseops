@@ -2,13 +2,16 @@ import cookie from "@fastify/cookie";
 import cors from "@fastify/cors";
 import Fastify, { type FastifyInstance } from "fastify";
 import type { AuditWrite, AuthRepository } from "./auth/repository.js";
+import type { ProjectRepository } from "./projects/repository.js";
 import { createPasswordHasher } from "./auth/passwords.js";
 import { createLoginRateLimiter, type RateLimiter } from "./auth/rate-limit.js";
 import { createAuthService } from "./auth/service.js";
 import { registerErrorHandler } from "./plugins/error-handler.js";
 import "./types.js";
 import { healthRoutes, type HealthRouteOptions } from "./routes/health.js";
+import { createProjectService } from "./projects/service.js";
 import { registerAuthRoutes } from "./routes/auth.js";
+import { registerProjectRoutes } from "./routes/projects.js";
 
 export interface BuildAppOptions extends HealthRouteOptions {
   webOrigin: string;
@@ -19,6 +22,9 @@ export interface BuildAppOptions extends HealthRouteOptions {
     now?: () => Date;
     rateLimit?: RateLimiter;
     secureCookies?: boolean;
+  };
+  projects?: {
+    repository: ProjectRepository;
   };
 }
 
@@ -66,6 +72,9 @@ export async function buildApp(options: BuildAppOptions): Promise<FastifyInstanc
       service,
       secureCookies: auth.secureCookies ?? false,
     });
+    if (options.projects) {
+      await registerProjectRoutes(app, createProjectService(options.projects.repository));
+    }
   }
 
   return app;
