@@ -2,10 +2,14 @@ import { existsSync } from "node:fs";
 import { resolve } from "node:path";
 import { config as loadDotenv } from "dotenv";
 import { PrismaPg } from "@prisma/adapter-pg";
+import { Queue } from "bullmq";
+import { Redis } from "ioredis";
 import { PrismaClient } from "./generated/prisma/client.js";
-import { SERVICE_NAMES } from "@releaseops/shared";
+import { QUEUE_NAMES, SERVICE_NAMES } from "@releaseops/shared";
 import { PrismaAuthRepository } from "./auth/prisma-repository.js";
 import { PrismaProjectRepository } from "./projects/prisma-repository.js";
+import { BullMqWebhookQueue } from "./webhooks/bullmq-queue.js";
+import { PrismaWebhookRepository } from "./webhooks/prisma-repository.js";
 import { buildApp } from "./app.js";
 import { loadEnv } from "./env.js";
 
@@ -20,6 +24,8 @@ const env = loadEnv();
 const prisma = new PrismaClient({
   adapter: new PrismaPg({ connectionString: env.DATABASE_URL }),
 });
+const connection = new Redis(env.REDIS_URL, { maxRetriesPerRequest: null });
+const jobs = new Queue(QUEUE_NAMES.jobs, { connection });
 
 const app = await buildApp({
   logLevel: env.LOG_LEVEL,
@@ -33,6 +39,10 @@ const app = await buildApp({
   projects: {
     repository: new PrismaProjectRepository(prisma),
   },
+  webhooks: {
+    repository: new PrismaWebhookRepository(prisma),
+    queue: new BullMqWebhookQueue(jobs),
+  },
   checkReady: async () => {
     await prisma.$queryRaw`SELECT 1`;
   },
@@ -45,6 +55,8 @@ async function shutdown(exitCode: number) {
   shuttingDown = true;
   try {
     await app.close();
+    await jobs.close();
+    await connection.quit();
     await prisma.$disconnect();
   } finally {
     process.exit(exitCode);

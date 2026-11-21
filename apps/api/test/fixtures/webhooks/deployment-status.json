@@ -1,0 +1,9 @@
+{
+  "action": "created",
+  "deployment_status": { "state": "success" },
+  "deployment": { "id": 9, "environment": "production" },
+  "repository": {
+    "name": "payments-api",
+    "owner": { "login": "Octo" }
+  }
+}

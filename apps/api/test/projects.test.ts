@@ -112,6 +112,8 @@ describe("projects", () => {
     expect(body.project.webhookSecret).toBe(body.webhook.secret);
     expect(body.webhook.payloadPath).toBe("/api/v1/webhooks/github");
     expect(body.webhook.instructions).toContain(body.webhook.secret);
+    expect(body.webhook.instructions).toContain("X-Hub-Signature-256");
+    expect(body.webhook.instructions).toContain("push");
     expect(body.project.environments).toHaveLength(1);
 
     const listed = await app.inject({

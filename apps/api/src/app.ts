@@ -12,6 +12,10 @@ import { healthRoutes, type HealthRouteOptions } from "./routes/health.js";
 import { createProjectService } from "./projects/service.js";
 import { registerAuthRoutes } from "./routes/auth.js";
 import { registerProjectRoutes } from "./routes/projects.js";
+import { registerWebhookRoutes } from "./routes/webhooks.js";
+import type { WebhookQueue } from "./webhooks/queue.js";
+import type { WebhookRepository } from "./webhooks/repository.js";
+import { createWebhookService, WEBHOOK_BODY_LIMIT } from "./webhooks/service.js";
 
 export interface BuildAppOptions extends HealthRouteOptions {
   webOrigin: string;
@@ -26,6 +30,12 @@ export interface BuildAppOptions extends HealthRouteOptions {
   projects?: {
     repository: ProjectRepository;
   };
+  webhooks?: {
+    repository: WebhookRepository;
+    queue: WebhookQueue;
+    bodyLimit?: number;
+    now?: () => Date;
+  };
 }
 
 export async function buildApp(options: BuildAppOptions): Promise<FastifyInstance> {
@@ -39,6 +49,7 @@ export async function buildApp(options: BuildAppOptions): Promise<FastifyInstanc
             redact: [
               "req.headers.authorization",
               "req.headers.cookie",
+              "req.headers['x-hub-signature-256']",
               "req.body.password",
               "req.body.inviteToken",
             ],
@@ -53,6 +64,17 @@ export async function buildApp(options: BuildAppOptions): Promise<FastifyInstanc
 
   registerErrorHandler(app);
   app.decorateRequest("user", null);
+  if (options.webhooks) {
+    const webhooks = options.webhooks;
+    await registerWebhookRoutes(
+      app,
+      createWebhookService(webhooks.repository, webhooks.queue, {
+        now: webhooks.now,
+        bodyLimit: webhooks.bodyLimit,
+      }),
+      webhooks.bodyLimit ?? WEBHOOK_BODY_LIMIT,
+    );
+  }
   await app.register(healthRoutes, {
     service: options.service,
     version: options.version,

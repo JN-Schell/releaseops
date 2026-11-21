@@ -128,8 +128,8 @@ function webhookInstructions(secret: string): string {
     `Payload URL: https://<releaseops-host>${WEBHOOK_PAYLOAD_PATH}`,
     "Content type: application/json",
     `Secret: ${secret}`,
-    "Events: workflow_run and deployment_status.",
-    "ReleaseOps does not accept deliveries until signed webhooks are enabled.",
+    "Events: workflow_run, push, and deployment_status.",
+    "ReleaseOps checks X-Hub-Signature-256 and stores each delivery once.",
   ].join("\n");
 }
 
