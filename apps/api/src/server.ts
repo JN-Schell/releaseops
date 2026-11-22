@@ -7,6 +7,7 @@ import { Redis } from "ioredis";
 import { PrismaClient } from "./generated/prisma/client.js";
 import { QUEUE_NAMES, SERVICE_NAMES } from "@releaseops/shared";
 import { PrismaAuthRepository } from "./auth/prisma-repository.js";
+import { PrismaBuildRepository } from "./builds/prisma-repository.js";
 import { PrismaProjectRepository } from "./projects/prisma-repository.js";
 import { BullMqWebhookQueue } from "./webhooks/bullmq-queue.js";
 import { PrismaWebhookRepository } from "./webhooks/prisma-repository.js";
@@ -38,6 +39,9 @@ const app = await buildApp({
   },
   projects: {
     repository: new PrismaProjectRepository(prisma),
+  },
+  builds: {
+    repository: new PrismaBuildRepository(prisma),
   },
   webhooks: {
     repository: new PrismaWebhookRepository(prisma),

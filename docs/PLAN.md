@@ -407,7 +407,7 @@ Estimates assume part-time work of about 10–15 hours/week. Each phase ends wit
 - [x] Projects and environments CRUD (API + UI)
 - [x] GitHub webhook endpoint: HMAC verify, dedupe, store, enqueue
 - [x] Worker: `workflow_run` → `builds` upsert
-- [ ] Builds list and detail pages with filters and pagination
+- [x] Builds list and detail pages with filters and pagination
 - [ ] `scripts/simulate-webhooks.ts` for demoing without a real repo
 - [ ] Webhook deliveries admin page with replay
 

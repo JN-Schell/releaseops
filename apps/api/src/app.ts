@@ -12,7 +12,10 @@ import { healthRoutes, type HealthRouteOptions } from "./routes/health.js";
 import { createProjectService } from "./projects/service.js";
 import { registerAuthRoutes } from "./routes/auth.js";
 import { registerProjectRoutes } from "./routes/projects.js";
+import { registerBuildRoutes } from "./routes/builds.js";
 import { registerWebhookRoutes } from "./routes/webhooks.js";
+import type { BuildRepository } from "./builds/repository.js";
+import { createBuildService } from "./builds/service.js";
 import type { WebhookQueue } from "./webhooks/queue.js";
 import type { WebhookRepository } from "./webhooks/repository.js";
 import { createWebhookService, WEBHOOK_BODY_LIMIT } from "./webhooks/service.js";
@@ -35,6 +38,9 @@ export interface BuildAppOptions extends HealthRouteOptions {
     queue: WebhookQueue;
     bodyLimit?: number;
     now?: () => Date;
+  };
+  builds?: {
+    repository: BuildRepository;
   };
 }
 
@@ -96,6 +102,9 @@ export async function buildApp(options: BuildAppOptions): Promise<FastifyInstanc
     });
     if (options.projects) {
       await registerProjectRoutes(app, createProjectService(options.projects.repository));
+    }
+    if (options.builds) {
+      await registerBuildRoutes(app, createBuildService(options.builds.repository));
     }
   }
 
