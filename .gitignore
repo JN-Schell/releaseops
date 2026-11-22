@@ -13,3 +13,4 @@ test-results/
 *.tsbuildinfo
 .husky/_
 apps/api/src/generated/
+apps/worker/src/generated/
