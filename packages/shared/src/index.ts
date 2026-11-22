@@ -15,6 +15,18 @@ export {
   type RegisterBody,
   type UpdateUserBody,
 } from "./auth.js";
+export {
+  buildListQuerySchema,
+  buildListResponseSchema,
+  buildResponseSchema,
+  buildSchema,
+  buildStatuses,
+  deploymentStatuses,
+  type BuildDetail,
+  type BuildListQuery,
+  type BuildStatus,
+  type BuildSummary,
+} from "./builds.js";
 export { errorBodySchema, type ErrorBody } from "./errors.js";
 export { healthResponseSchema, healthStatusSchema, type HealthResponse } from "./health.js";
 export {

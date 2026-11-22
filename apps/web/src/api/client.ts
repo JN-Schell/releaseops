@@ -1,5 +1,7 @@
 import {
   authUserResponseSchema,
+  buildListResponseSchema,
+  buildResponseSchema,
   createProjectResponseSchema,
   environmentResponseSchema,
   errorBodySchema,
@@ -9,6 +11,9 @@ import {
   projectResponseSchema,
   setupResponseSchema,
   userListResponseSchema,
+  type BuildDetail,
+  type BuildListQuery,
+  type BuildSummary,
   type CreateInviteBody,
   type CreateProjectBody,
   type EnvironmentBody,
@@ -211,6 +216,29 @@ export async function updateEnvironment(
 export async function deleteEnvironment(id: string): Promise<void> {
   const response = await request(`/api/v1/environments/${id}`, { method: "DELETE" });
   if (!response.ok) await parseError(response);
+}
+
+export async function fetchProjectBuilds(
+  projectId: string,
+  query: Partial<BuildListQuery> = {},
+): Promise<{ data: BuildSummary[]; nextCursor: string | null }> {
+  const params = new URLSearchParams();
+  if (query.branch) params.set("branch", query.branch);
+  if (query.status) params.set("status", query.status);
+  if (query.from) params.set("from", query.from);
+  if (query.to) params.set("to", query.to);
+  if (query.cursor) params.set("cursor", query.cursor);
+  if (query.limit) params.set("limit", String(query.limit));
+  const suffix = params.size > 0 ? `?${params.toString()}` : "";
+  const response = await request(`/api/v1/projects/${projectId}/builds${suffix}`);
+  if (!response.ok) await parseError(response);
+  return buildListResponseSchema.parse(await response.json());
+}
+
+export async function fetchBuild(id: string): Promise<BuildDetail> {
+  const response = await request(`/api/v1/builds/${id}`);
+  if (!response.ok) await parseError(response);
+  return buildResponseSchema.parse(await response.json()).build;
 }
 
 export async function updateUser(id: string, patch: UpdateUserBody): Promise<PublicUser> {

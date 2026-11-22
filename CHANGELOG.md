@@ -13,6 +13,9 @@ tag. Documentation merged after auth is listed under Unreleased and is not part 
 
 ### Added
 
+- Build list and detail pages. A project’s Builds tab filters by branch, status, and date, and
+  pages with a stable cursor. The detail page shows the commit, duration, GitHub run, and any
+  deployments that used the build. Administrators, developers, and approvers can read them.
 - Workflow builds. The worker upserts a build from each `workflow_run` delivery, including
   in-progress, failed, and successful runs. Processing the same run again updates that build. A
   worker error is stored on the delivery and the job can be retried. Build pages are still the

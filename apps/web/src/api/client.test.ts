@@ -1,5 +1,11 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { createProject, fetchCurrentUser, fetchHealth, loginAccount } from "./client";
+import {
+  createProject,
+  fetchCurrentUser,
+  fetchHealth,
+  fetchProjectBuilds,
+  loginAccount,
+} from "./client";
 
 afterEach(() => {
   vi.unstubAllGlobals();
@@ -132,6 +138,25 @@ describe("session client", () => {
     expect(fetchMock).toHaveBeenCalledWith(
       "http://localhost:3001/api/v1/projects",
       expect.objectContaining({ method: "POST", credentials: "include" }),
+    );
+  });
+
+  it("loads project builds with credentials included", async () => {
+    const fetchMock = vi.fn().mockResolvedValue({
+      ok: true,
+      status: 200,
+      json: async () => ({ data: [], nextCursor: null }),
+    });
+    vi.stubGlobal("fetch", fetchMock);
+    const projectId = "123e4567-e89b-12d3-a456-426614174000";
+
+    await expect(fetchProjectBuilds(projectId, { branch: "main", limit: 20 })).resolves.toEqual({
+      data: [],
+      nextCursor: null,
+    });
+    expect(fetchMock).toHaveBeenCalledWith(
+      `http://localhost:3001/api/v1/projects/${projectId}/builds?branch=main&limit=20`,
+      expect.objectContaining({ credentials: "include" }),
     );
   });
 });

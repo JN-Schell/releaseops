@@ -13,9 +13,10 @@ import {
 } from "../api/client";
 import { useSession } from "../auth/session";
 import { LabelInput } from "../components/LabelInput";
+import { ProjectBuilds } from "../components/ProjectBuilds";
 import { fieldClass, primaryButtonClass, quietButtonClass } from "../ui";
 
-type Tab = "overview" | "environments" | "settings";
+type Tab = "overview" | "builds" | "environments" | "settings";
 
 export function ProjectPage() {
   const params = useParams();
@@ -98,6 +99,7 @@ export function ProjectPage() {
         {(
           [
             ["overview", "Overview"],
+            ["builds", "Builds"],
             ["environments", "Environments"],
             ["settings", "Settings"],
           ] as const
@@ -121,6 +123,7 @@ export function ProjectPage() {
           <p className="mt-3 text-zinc-400">Default branch: {current.defaultBranch}</p>
         </div>
       ) : null}
+      {tab === "builds" ? <ProjectBuilds projectId={current.id} /> : null}
       {tab === "environments" ? (
         <Environments
           projectId={current.id}
