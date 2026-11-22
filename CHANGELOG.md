@@ -13,6 +13,10 @@ tag. Documentation merged after auth is listed under Unreleased and is not part 
 
 ### Added
 
+- Workflow builds. The worker upserts a build from each `workflow_run` delivery, including
+  in-progress, failed, and successful runs. Processing the same run again updates that build. A
+  worker error is stored on the delivery and the job can be retried. Build pages are still the
+  next issue.
 - Signed GitHub webhooks. `POST /api/v1/webhooks/github` checks `X-Hub-Signature-256`, stores
   `workflow_run`, `push`, and `deployment_status` once, and queues the delivery for the worker.
   A duplicate delivery id is acknowledged and is not queued again. Turning a delivery into a build

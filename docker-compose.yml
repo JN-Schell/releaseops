@@ -76,8 +76,11 @@ services:
       dockerfile: docker/worker.Dockerfile
     environment:
       REDIS_URL: redis://redis:6379
+      DATABASE_URL: postgresql://releaseops:releaseops@postgres:5432/releaseops
       LOG_LEVEL: info
     depends_on:
+      postgres:
+        condition: service_healthy
       redis:
         condition: service_healthy
     restart: unless-stopped

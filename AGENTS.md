@@ -245,8 +245,8 @@ lacked the `project` scope. Issues and milestones stay authoritative until the b
 - `can()` in `packages/shared` is the authorization authority. The interface only hides controls.
 - The login rate limit is process-local. A shared limiter belongs to the later hardening issue.
 - Docker Compose passwords are local defaults. Do not reuse them.
-- The worker process starts, connects to Redis, and logs jobs. It does not yet turn webhook
-  events into builds.
+- The worker turns `workflow_run` deliveries into builds. `push` and `deployment_status` are
+  marked processed and do not create rows yet.
 - The v1 Prisma schema already contains later tables such as projects and deployments. Application
   features for those tables are still the open Phase 2 through Phase 4 issues.
 

@@ -8,6 +8,8 @@ export class BullMqWebhookQueue implements WebhookQueue {
   async enqueue(job: WebhookJob): Promise<void> {
     await this.queue.add(JOB_NAMES.githubWebhook, job, {
       jobId: job.githubDeliveryId,
+      attempts: 3,
+      backoff: { type: "exponential", delay: 1000 },
       removeOnComplete: 1000,
       removeOnFail: 1000,
     });
